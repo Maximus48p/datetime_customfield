@@ -13,9 +13,9 @@ Tested against Mantisbt 2.21
 
 1) in your main mantis dir (not core) create a new file named 'custom_constants_inc.php' and add following lines to it
 
-<?php
-define( 'CUSTOM_FIELD_TYPE_DATETIME', 11 );
-?>
+//<?php
+//define( 'CUSTOM_FIELD_TYPE_DATETIME', 11 );
+//?>
 
 
 2) implement the code
