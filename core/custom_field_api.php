@@ -62,6 +62,7 @@ $g_custom_field_types[CUSTOM_FIELD_TYPE_CHECKBOX] = 'standard';
 $g_custom_field_types[CUSTOM_FIELD_TYPE_LIST] = 'standard';
 $g_custom_field_types[CUSTOM_FIELD_TYPE_MULTILIST] = 'standard';
 $g_custom_field_types[CUSTOM_FIELD_TYPE_DATE] = 'standard';
+$g_custom_field_types[CUSTOM_FIELD_TYPE_DATETIME] = 'standard';
 
 foreach( $g_custom_field_types as $t_type ) {
 	require_once( config_get_global( 'core_path' ) . 'cfdefs/cfdef_' . $t_type . '.php' );
@@ -1113,6 +1114,14 @@ function custom_field_validate( $p_field_id, $p_value ) {
 			# For 32 bit systems, supported range will be 13 Dec 1901 20:45:54 UTC to 19 Jan 2038 03:14:07 UTC
 			$t_valid &= $p_value !== false;
 			break;
+		case CUSTOM_FIELD_TYPE_DATETIME:
+			# gpc_get_cf for date returns the value from strtotime
+			# For 32 bit systems, supported range will be 13 Dec 1901 20:45:54 UTC to 19 Jan 2038 03:14:07 UTC
+			if( $p_value === '' ) {
+				break;
+			}
+			$t_valid &= $p_value !== false; # datetime
+			break;
 		case CUSTOM_FIELD_TYPE_CHECKBOX:
 		case CUSTOM_FIELD_TYPE_MULTILIST:
 			# Checkbox fields can hold a null value (when no checkboxes are ticked)
@@ -1223,6 +1232,7 @@ function custom_field_distinct_values( array $p_field_def, $p_project_id = ALL_P
 					$t_select_expr = db_is_mysql() ? 'cfst.value+0.0' : 'CAST(NULLIF(cfst.value,\'\') AS FLOAT)';
 					break;
 				case CUSTOM_FIELD_TYPE_DATE:
+				case CUSTOM_FIELD_TYPE_DATETIME:
 				case CUSTOM_FIELD_TYPE_NUMERIC:
 					$t_select_expr = 'CAST(NULLIF(cfst.value,\'\') AS DECIMAL)';
 					break;

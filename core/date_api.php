@@ -164,6 +164,33 @@ function print_day_option_list( $p_day = 0 ) {
 }
 
 /**
+ * Datetime function BEGIN
+ */
+function print_hour_option_list( $p_hour = 0 ) {
+	for( $i = 0;$i <= 23;$i++ ) {
+		if ( $i == $p_hour ) {
+			echo '<option value="' . $i . '" selected="selected">' . $i . '</option>';
+		} else {
+			echo '<option value="' . $i . '">' . $i . '</option>';
+		}
+	}
+}
+
+function print_minute_option_list( $p_minute = 0 ) {
+	for ( $i = 0;$i <= 59;$i++ ) {
+		if ( $i == $p_minute ) {
+			echo '<option value="' . $i . '" selected="selected">' . $i . '</option>';
+		} else {
+			echo '<option value="' . $i . '">' . $i . '</option>';
+		}
+	}
+}
+/**
+ * Datetime function END
+ */
+
+
+/**
  * Print html option tags for year since 1999 in a select list
  * @todo deprecate this for year_range
  * @param integer $p_year Integer representing year.
@@ -280,3 +307,60 @@ function print_date_selection_set( $p_name, $p_format, $p_date = 0, $p_default_d
 	}
 }
 
+function print_datetime_selection_set( $p_name, $p_format, $p_date = 0, $p_default_disable = false, $p_allow_blank = false, $p_year_start = 0, $p_year_end = 0, $p_input_css = 'input-sm', $p_required = '' ) {
+	$t_chars = preg_split( '//', $p_format, -1, PREG_SPLIT_NO_EMPTY );
+	if ( $p_date != 0 ) {
+		$t_date = preg_split('/-| |:/', date( 'Y-m-d H:i', $p_date), -1, PREG_SPLIT_NO_EMPTY) ;
+	} else {
+		$t_date = array( 0, 0, 0, 0, 0 );
+	}
+
+	$t_disable = '';
+	if( $p_default_disable == true ) {
+		$t_disable = ' disabled="disabled"';
+	}
+	$t_blank_line = '';
+	if( $p_allow_blank == true ) {
+		$t_blank_line = '<option value="0"></option>';
+	}
+
+	foreach( $t_chars as $t_char ) {
+		if( strcmp( $t_char, 'M' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' . helper_get_tab_index() . ' name="' . $p_name . '_month"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_month_option_list( $t_date[1] );
+			echo '</select>' . "\n";
+		}
+		if( strcmp( $t_char, 'm' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' . helper_get_tab_index() . ' name="' . $p_name . '_month"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_month_option_list( $t_date[1] );
+			echo '</select>' . "\n";
+		}
+		if( strcasecmp( $t_char, 'D' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' . helper_get_tab_index() . ' name="' . $p_name . '_day"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_day_option_list( $t_date[2] );
+			echo '</select>' . "\n";
+		}
+		if( strcasecmp( $t_char, 'Y' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' .  helper_get_tab_index() . ' name="' . $p_name . '_year"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_year_range_option_list( $t_date[0], $p_year_start, $p_year_end );
+			echo '</select>' . "\n";
+		}
+		if( strcasecmp( $t_char, 'H' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' .  helper_get_tab_index() . ' name="' . $p_name . '_hour"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_hour_option_list( $t_date[3] );
+			echo '</select>' . "\n";
+		}
+		if( strcasecmp( $t_char, 'i' ) == 0 ) {
+			echo '<select class="' . $p_input_css . '" ' .  helper_get_tab_index() . ' name="' . $p_name . '_minute"' . $t_disable . $p_required . '>';
+			echo $t_blank_line;
+			print_minute_option_list( $t_date[4] );
+			echo '</select>' . "\n";
+		}
+	}
+	echo "($p_format)"; 
+}
